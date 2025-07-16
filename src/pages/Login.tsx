@@ -1,84 +1,92 @@
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+// src/pages/Login.tsx
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-const loginSchema = z.object({
-  email: z.string().email("Invalid email format"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-type LoginFormInputs = z.infer<typeof loginSchema>;
+// import { useAuthStore } from "@/store/useAuthStore";
+import { useLoginUserMutation } from "@/store/api/auth/authApi";
+import { useAppDispatch } from "@/store/hooks";
+import { loginUser } from "@/store/features/user/userSlice";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormInputs>({
-    resolver: zodResolver(loginSchema),
-  });
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [login, { isLoading }] = useLoginUserMutation();
+  // const { login } = useAuthStore();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const onSubmit = (data: LoginFormInputs) => {
-    console.log("Login Data:", data);
-    navigate("/");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const result = await login({ email, password }).unwrap();
+      console.log("Login successful:", result);
+      if (result?.success) {
+        dispatch(
+          loginUser({
+            id: result?.data?.user?.id,
+            email: result?.data?.user?.email,
+            accessToken: result?.data?.accessToken,
+            role: result?.data?.user?.role,
+          })
+        );
+        navigate("/dashboard");
+        toast.success("Login successful");
+      } else {
+        toast.error(result?.message || "Login failed");
+      }
+    } catch (error) {}
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold text-center">Login</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-          {/* Email Field */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              {...register("email")}
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-primary-0 text-T-900">
+      <form onSubmit={handleSubmit} className="space-y-4 w-[400px]">
+        <h2 className="text-xl 2xl:text-2xl font-bold text-center">Login</h2>
 
-          {/* Password Field */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              {...register("password")}
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
-            )}
-          </div>
+        <div>
+          <label className="block mb-1">
+            Email <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 bg-primary-0 border border-T-900 text-T-900 focus:outline-none rounded-md"
+            required
+          />
+        </div>
 
-          <div className="mb-3">
-            <p>
-              Already have an account?{" "}
-              <Link to="/signup" className="text-blue-400 ">
-                Sign up here
-              </Link>
-            </p>
-          </div>
+        <div>
+          <label className="block mb-1">
+            Password <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 bg-primary-0 border border-T-900 text-T-900 focus:outline-none rounded-md"
+            required
+          />
+        </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-T-900 disabled:cursor-not-allowed disabled:bg-T-900/70 text-primary-0 py-2 rounded-md"
+        >
+          {isLoading && <LoaderCircle className="animate-spin inline-block mr-2 " size={24} />}{" "}
+          Login
+        </button>
+
+        <div className="text-center text-sm text-T-900">
+          <Link
+            to={"/prereset"}
+            className="text-center text-lg underline cursor-pointer"
           >
-            Login
-          </button>
-        </form>
-      </div>
+            Forgot password?
+          </Link>
+        </div>
+      </form>
     </div>
   );
 };
