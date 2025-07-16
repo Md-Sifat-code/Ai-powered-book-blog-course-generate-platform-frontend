@@ -1,62 +1,94 @@
-import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
-import About from "../pages/About";
-import Contact from "../pages/Contact";
-import NotFound from "../pages/NotFound";
-import Home from "../pages/Home";
-import AdminRoute from "./AdminRoutes";
-import AdminDashboard from "@/pages/Admin/AdminDashboard";
+import AuthLayout from "@/layout/AuthLayout";
+import DashboardLayout from "@/layout/DashboardLayout";
+import PreReset from "@/NewComponent/AuthComponents/PreReset";
+import Reset from "@/NewComponent/AuthComponents/Reset";
+import BlogBotBasic from "@/NewComponent/BlogBotComponents/BlogBotBasic";
+import BlogBotDetails from "@/NewComponent/BlogBotComponents/BlogBotDetails";
+import BookGenieBasic from "@/NewComponent/BookGenieComponents/BookGenieBasic";
+import BookGenieDetails from "@/NewComponent/BookGenieComponents/BookGenieDetails";
+import CourseComposerBasic from "@/NewComponent/CourseComposerComponents/CourseComposerBasic";
+import CourseComposerDetails from "@/NewComponent/CourseComposerComponents/CourseComposerDetails";
+import Basic from "@/NewComponent/HomeComponents/Basic";
+import VideoVisionBasic from "@/NewComponent/VideoVisionComponents/VideoVisionBasic";
+import VideoVisionDetails from "@/NewComponent/VideoVisionComponents/VideoVisionDetails";
 import Login from "@/pages/Login";
-import Signup from "@/pages/Signup";
-import Form from "@/pages/Form";
-import Services from "@/pages/Services";
+
+import { createBrowserRouter } from "react-router-dom";
+
 
 const routes = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <AuthLayout />,
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <Login />
       },
       {
-        path: "/about",
-        element: <About />,
+        path: "/prereset",
+        element: <PreReset />
+
       },
       {
-        path: "/contact",
-        element: <Contact />,
-      },
-      {
-        path: "/services",
-        element: <Services />,
-      },
-      {
-        path: "/form",
-        element: <Form />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/signup",
-        element: <Signup />,
-      },
-      {
-        path: "/admin",
-        element: <AdminRoute />, // This will check if the user is an admin
-        children: [
-          { path: "", element: <AdminDashboard /> }, // Admin Dashboard
-        ],
-      },
-    ],
+        path: "/reset-password",
+        element: <Reset />
+      }
+    ]
+
   },
   {
-    path: "*",
-    element: <NotFound />,
-  },
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <Basic />
+      },
+      {
+        path: "/dashboard/videovision",
+        element: <VideoVisionBasic />
+
+      },
+      {
+        path: "/dashboard/videovision/:id",
+        element: <VideoVisionDetails />
+
+      },
+      {
+        path: "/dashboard/bookgenie",
+        element: <BookGenieBasic></BookGenieBasic>
+
+      },
+      {
+        path: "/dashboard/bookgenie/:id",
+        element: <BookGenieDetails></BookGenieDetails>
+
+      },
+      {
+        path: "/dashboard/blogbot",
+        element: <BlogBotBasic />
+
+      },
+      {
+        path: "/dashboard/blogbot/:id",
+        element: <BlogBotDetails />
+
+      },
+      {
+        path: "/dashboard/coursecomposer",
+        element: <CourseComposerBasic />
+
+      },
+      {
+        path: "/dashboard/coursecomposer/:id",
+        element: <CourseComposerDetails />
+
+      },
+    ]
+  }
+
+
 ]);
 
 export default routes;
