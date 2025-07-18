@@ -4,9 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 // import { useAuthStore } from "@/store/useAuthStore";
 import { useLoginUserMutation } from "@/store/api/auth/authApi";
 import { useAppDispatch } from "@/store/hooks";
-import { loginUser } from "@/store/features/user/userSlice";
+
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
+import { loginUser } from "@/store/features/user/userSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
