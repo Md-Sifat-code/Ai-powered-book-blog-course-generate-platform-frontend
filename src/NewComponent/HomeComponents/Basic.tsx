@@ -2,8 +2,9 @@ import bookImg from "@/assets/ImagesLanding/AILand1.jpg";
 import videoImg from "@/assets/ImagesLanding/AiLand2.jpg";
 import blogImg from "@/assets/ImagesLanding/AiLand3.jpg";
 import courseImg from "@/assets/ImagesLanding/AiLand4.jpg";
+import { useAppSelector } from "@/hooks/useRedux";
 import { selectUser } from "@/store/features/user/userSlice";
-import { useAppSelector } from "@/store/hooks";
+
 import { Camera, LinkIcon, Mic } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";

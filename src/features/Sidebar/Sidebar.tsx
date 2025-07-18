@@ -22,9 +22,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import SocialMediaModal from "@/NewComponent/BlogBotComponents/SocialMediaModal";
+import { useAppDispatch } from "@/hooks/useRedux";
 import { useGetHistoryQuery } from "@/store/api/history/historyApi";
-import { useAppDispatch } from "@/store/hooks";
 import { logoutUser } from "@/store/features/user/userSlice";
+
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -56,7 +57,7 @@ const Sidebar = () => {
     closed: { width: "4rem" },
   };
   const handleLogout = () => {
-    dispatch(logoutUser())
+    dispatch(logoutUser());
     navigate("/");
   };
 
